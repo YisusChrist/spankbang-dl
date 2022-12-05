@@ -1,8 +1,6 @@
 import requests
 import re
-from concurrent.futures import ThreadPoolExecutor
 import os, time
-import shutil
 from tqdm import tqdm
 #引入库
 
