@@ -1,13 +1,16 @@
-<h1>Spankbang-Downloader</h1>
-<p>一个适用于Spankbang的下载工具，小姐姐等你把她领回家😘😘😘</p>
-<h2>一：使用方法</h2>
-  <p>安装相关环境：<br>
-        1.安装python（网上一大堆教程)<br>
-        2.安装库 requests ：$ pip install requests  或者 $ pip3 install requests <br>
-                  tqdm : $  pip install tqdm  或者 $ pip3 install tqdm <br>
-      运行程序：<br>
-        3.运行（图形的话运行UI_Downloader.py）运行文件python main.py  或者  pyhton3 main.py<br>
-        4.文件已经下载至代码所在文件夹内（可以查收了😏❤️❤️❤️）<br>
-   注：新增了下载进度条（有时可能显示不正常，技术有限请谅解）💕💕💕
-  </p>
- <h2>新写了图形化的程序（UI_Downloader.py），需要再装一些依赖，会装的用，不会的等我打包好发行</h2>
+# Spankbang-Downloader
+A download tool for Spankbang, where lovely ladies await you to bring them home 😘😘😘
+
+## Instructions
+Install the required environment:
+1. Install Python (there are plenty of tutorials online).
+2. Install libraries: requests (`$ pip install requests` or `$ pip3 install requests`) and tqdm (`$ pip install tqdm` or `$ pip3 install tqdm`).
+Run the program:
+3. Run (for the graphical version, run UI_Downloader.py): `python main.py` or `python3 main.py`.
+4. The files will be downloaded to the folder where the code is located (you can check them out 😏❤️❤️❤️).
+Note: A download progress bar has been added (sometimes it may not display correctly, apologies for any inconvenience) 💕💕💕.
+
+## UI Version
+New graphical version of the program (UI_Downloader.py) is available. It requires some additional dependencies. If you know how to install them, go ahead; if not, stay tuned for a packaged release.
+
+[中文版本](.github/README.zh.md)
