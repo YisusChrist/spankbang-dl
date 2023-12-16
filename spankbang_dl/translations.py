@@ -65,5 +65,4 @@ def get_translations(selected_language: str) -> dict:
 
     file = Path(STRINGS_PATH).resolve() / f"strings_{selected_language}.json"
     with open(file, encoding="utf-8") as json_file:
-        translations = json.load(json_file)
-    return translations
+        return json.load(json_file)
