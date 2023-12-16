@@ -5,7 +5,7 @@ import argparse
 from rich.traceback import install
 from rich_argparse_plus import RichHelpFormatterPlus
 
-from .consts import *
+from .consts import DESC, EXIT_SUCCESS, NAME, VERSION
 from .gui import VideoDownloaderUI
 from .logs import logger
 from .translations import detect_available_languages, select_language
