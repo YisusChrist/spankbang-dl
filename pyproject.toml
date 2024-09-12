@@ -18,6 +18,9 @@ tqdm = "^4.66.1"
 [tool.poetry.group.dev.dependencies]
 types-requests = "^2.32.0.20240907"
 
+[tool.poetry.scripts]
+spankbang-dl = "spankbang_dl.__main__:main"
+
 [tool.commitizen]
 name = "cz_conventional_commits"
 tag_format = "$version"
