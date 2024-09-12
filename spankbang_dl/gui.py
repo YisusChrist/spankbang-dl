@@ -122,7 +122,7 @@ class VideoDownloaderUI:
         min_height = main_frame.winfo_reqheight()
         self.win.minsize(min_width, min_height)
 
-    def handle_web_content_fetch(self, url) -> requests.Response:
+    def handle_web_content_fetch(self, url) -> requests.Response | None:
         """
         Fetch web content from the given URL and handle exceptions.
 
@@ -141,7 +141,7 @@ class VideoDownloaderUI:
                     + str(response.status_code)
                     + "\n",
                 )
-                return
+            return response
 
         except requests.exceptions.RequestException as e:
             logger.error(e)
@@ -149,6 +149,7 @@ class VideoDownloaderUI:
                 tk.INSERT,
                 self.translations["download_failed_message"].format(str(e)) + "\n",
             )
+            return None
 
     def extract_and_display_video_info(self, html: str) -> str:
         """Extract and display video information."""
@@ -204,9 +205,14 @@ class VideoDownloaderUI:
         url = self.a_url.get()
 
         r = self.handle_web_content_fetch(url)
+        if r is None:
+            return
+        
         title = self.extract_and_display_video_info(r.text)
-
         resp = self.handle_web_content_fetch(title)
+        if resp is None:
+            return
+        
         self.download_video_and_display_progress(resp, title)
 
     def _quit(self) -> None:
