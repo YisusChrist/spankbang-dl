@@ -1,20 +1,10 @@
 """Logging configuration."""
-import logging
 
-from .consts import LOG_FILE, NAME, DEBUG
+from logging import Logger
 
-logger = logging.getLogger(NAME)
+from core_helpers.logs import setup_logger
 
-handlers = [logging.FileHandler(LOG_FILE)]
-level = logging.INFO
-msg_format = "[%(asctime)s] %(levelname)s: %(message)s"
+from .consts import DEBUG, LOG_FILE, PACKAGE
 
-if DEBUG:
-    level = logging.DEBUG
-    msg_format += ": %(pathname)s:%(lineno)d in %(funcName)s"
-
-logging.basicConfig(
-    level=level,
-    format=msg_format,
-    handlers=handlers,
-)
+# Automatically sets up and returns the cached logger instance
+logger: Logger = setup_logger(PACKAGE, LOG_FILE, DEBUG)

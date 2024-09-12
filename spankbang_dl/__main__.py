@@ -1,87 +1,23 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-import argparse
+"""Main module for the SpankBang Downloader."""
 
+from argparse import Namespace
+from core_helpers.updates import check_updates
 from rich.traceback import install
-from rich_argparse_plus import RichHelpFormatterPlus
 
-from .consts import DESC, EXIT_SUCCESS, NAME, VERSION
+from .cli import get_parsed_args
+from .consts import EXIT_SUCCESS, GITHUB
+from .consts import __version__ as VERSION
 from .gui import VideoDownloaderUI
 from .logs import logger
-from .translations import detect_available_languages, select_language
-from .utils import exit_session, check_for_updates
+from .translations import select_language
+from .utils import exit_session
 
 
-def get_parsed_args() -> argparse.Namespace:
-    """
-    Parse and return command-line arguments.
-
-    Returns:
-        The parsed arguments as an argparse.Namespace object.
-    """
-    global parser
-
-    RichHelpFormatterPlus.choose_theme("grey_area")
-
-    parser = argparse.ArgumentParser(
-        description=DESC,  # Program description
-        formatter_class=RichHelpFormatterPlus,  # Disable line wrapping
-        allow_abbrev=False,  # Disable abbreviations
-        add_help=False,  # Disable default help
-    )
-
-    # Create a group for the required arguments
-    g_required = parser.add_argument_group("Required Arguments")
-
-    # Language
-    g_required.add_argument(
-        "-l",
-        "--language",
-        type=str,
-        choices=detect_available_languages(),
-        # default="en",
-        help="The language to use. Default is English.",
-    )
-
-    g_misc = parser.add_argument_group("Miscellaneous Options")
-    # Help
-    g_misc.add_argument(
-        "-h", "--help", action="help", help="Show this help message and exit."
-    )
-    # Verbose
-    g_misc.add_argument(
-        "-v",
-        "--verbose",
-        dest="verbose",
-        action="store_true",
-        default=False,
-        help="Show log messages on screen. Default is False.",
-    )
-    # Debug
-    g_misc.add_argument(
-        "-d",
-        "--debug",
-        dest="debug",
-        action="store_true",
-        default=False,
-        help="Activate debug logs. Default is False.",
-    )
-    g_misc.add_argument(
-        "-V",
-        "--version",
-        action="version",
-        help="Show version number and exit.",
-        version=f"[argparse.prog]{NAME}[/] version [i]{VERSION}[/]",
-    )
-
-    return parser.parse_args()
-
-
-def main():
-    args = get_parsed_args()
+def main() -> None:
+    args: Namespace = get_parsed_args()
     logger.info("Start of session")
 
-    check_for_updates()
+    check_updates(GITHUB, VERSION)
 
     if not args.language:
         logger.info("No language specified, prompting user to select one")

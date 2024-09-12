@@ -29,9 +29,9 @@ def select_language() -> str:
             ),
         ]
         answer = inquirer.prompt(questions)
-        return answer["language"]
     except:
         exit_session(EXIT_FAILURE)
+    return answer["language"]
 
 
 def detect_available_languages() -> list:

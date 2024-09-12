@@ -1,15 +1,14 @@
 # 写UI
-from datetime import date
 import sys
 import tkinter as tk
-from tkinter import messagebox
-from tkinter import ttk
-from tkinter import scrolledtext
+from datetime import date
+from tkinter import messagebox, scrolledtext, ttk
 
 import requests
 from tqdm import tqdm
 
-from .consts import MB, AUTHOR, VERSION
+from .consts import AUTHOR, MB
+from .consts import __version__ as VERSION
 from .downloader import extract_video_info, fetch_web_content
 from .logs import logger
 from .translations import get_translations
