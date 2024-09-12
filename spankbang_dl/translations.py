@@ -2,7 +2,7 @@ import json
 import os
 from pathlib import Path
 
-import inquirer
+import inquirer  # type: ignore
 
 from .consts import EXIT_FAILURE, STRINGS_PATH
 from .logs import logger

@@ -5,7 +5,7 @@ from datetime import date
 from tkinter import messagebox, scrolledtext, ttk
 
 import requests
-from tqdm import tqdm
+from tqdm import tqdm  # type: ignore
 
 from .consts import AUTHOR, MB
 from .consts import __version__ as VERSION
