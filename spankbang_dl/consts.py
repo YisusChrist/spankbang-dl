@@ -1,5 +1,6 @@
 """Constants for the project."""
 
+from pathlib import Path
 from core_helpers.xdg_paths import get_user_path
 
 try:
@@ -17,7 +18,7 @@ CONFIG_PATH = get_user_path(PACKAGE, "config")
 CONFIG_FILE = CONFIG_PATH / f"{PACKAGE}.ini"
 LOG_PATH = get_user_path(PACKAGE, "log")
 LOG_FILE = LOG_PATH / f"{PACKAGE}.log"
-STRINGS_PATH = "strings"
+STRINGS_PATH = Path("strings").resolve()
 
 EXIT_SUCCESS = 0
 EXIT_FAILURE = 1

@@ -1,8 +1,7 @@
 import json
-import os
-from pathlib import Path
 
 import inquirer  # type: ignore
+from rich import print
 
 from .consts import EXIT_FAILURE, STRINGS_PATH
 from .logs import logger
@@ -18,6 +17,10 @@ def select_language() -> str:
     """
     logger.debug("Selecting language")
     available_languages = detect_available_languages()
+    if not available_languages:
+        print("[red]ERROR[/]: No available languages found")
+        logger.error("No available languages found")
+        exit_session(EXIT_FAILURE)
 
     try:
         # Ask the user to select a column to use as key
@@ -43,12 +46,10 @@ def detect_available_languages() -> list:
     """
     logger.debug("Detecting available languages")
 
-    available_languages = []
-    for filename in os.listdir(STRINGS_PATH):
-        if filename.startswith("strings_") and filename.endswith(".json"):
-            lang_code = filename.replace("strings_", "").replace(".json", "")
-            available_languages.append(lang_code)
-    return available_languages
+    return [
+        file.stem.replace("strings_", "")
+        for file in STRINGS_PATH.glob("strings_*.json")
+    ]
 
 
 def get_translations(selected_language: str) -> dict:
@@ -63,6 +64,6 @@ def get_translations(selected_language: str) -> dict:
     """
     logger.debug("Getting translations")
 
-    file = Path(STRINGS_PATH).resolve() / f"strings_{selected_language}.json"
+    file = STRINGS_PATH / f"strings_{selected_language}.json"
     with open(file, encoding="utf-8") as json_file:
         return json.load(json_file)
