@@ -354,13 +354,13 @@ windows-terminal = ["colorama (>=0.4.6)"]
 
 [[package]]
 name = "readchar"
-version = "4.2.0"
+version = "4.2.1"
 description = "Library to easily read single chars and key strokes"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "readchar-4.2.0-py3-none-any.whl", hash = "sha256:2a587a27c981e6d25a518730ad4c88c429c315439baa6fda55d7a8b3ac4cb62a"},
-    {file = "readchar-4.2.0.tar.gz", hash = "sha256:44807cbbe377b72079fea6cba8aa91c809982d7d727b2f0dbb2d1a8084914faa"},
+    {file = "readchar-4.2.1-py3-none-any.whl", hash = "sha256:a769305cd3994bb5fa2764aa4073452dc105a4ec39068ffe6efd3c20c60acc77"},
+    {file = "readchar-4.2.1.tar.gz", hash = "sha256:91ce3faf07688de14d800592951e5575e9c7a3213738ed01d394dcc949b79adb"},
 ]
 
 [[package]]
