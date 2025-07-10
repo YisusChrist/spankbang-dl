@@ -1,7 +1,7 @@
 """Constants for the project."""
 
 from pathlib import Path
-from core_helpers.xdg_paths import get_user_path
+from core_helpers.xdg_paths import PathType, get_user_path
 
 try:
     from importlib import metadata
@@ -14,9 +14,9 @@ PACKAGE = metadata.metadata(__package__ or __name__)["Name"]
 GITHUB = metadata.metadata(__package__ or __name__)["Home-page"]
 AUTHOR = metadata.metadata(__package__ or __name__)["Author"]
 
-CONFIG_PATH = get_user_path(PACKAGE, "config")
+CONFIG_PATH = get_user_path(PACKAGE, PathType.CONFIG)
 CONFIG_FILE = CONFIG_PATH / f"{PACKAGE}.ini"
-LOG_PATH = get_user_path(PACKAGE, "log")
+LOG_PATH = get_user_path(PACKAGE, PathType.LOG)
 LOG_FILE = LOG_PATH / f"{PACKAGE}.log"
 STRINGS_PATH = Path("strings").resolve()
 
