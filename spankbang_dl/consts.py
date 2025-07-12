@@ -18,7 +18,7 @@ CONFIG_PATH = get_user_path(PACKAGE, PathType.CONFIG)
 CONFIG_FILE = CONFIG_PATH / f"{PACKAGE}.ini"
 LOG_PATH = get_user_path(PACKAGE, PathType.LOG)
 LOG_FILE = LOG_PATH / f"{PACKAGE}.log"
-STRINGS_PATH = Path("strings").resolve()
+STRINGS_PATH = (Path(__file__).parent / "strings").resolve()
 
 EXIT_SUCCESS = 0
 EXIT_FAILURE = 1
