@@ -17,7 +17,8 @@ def main() -> None:
     args: Namespace = get_parsed_args()
     logger.info("Start of session")
 
-    check_updates(GITHUB, VERSION)
+    if GITHUB:
+        check_updates(GITHUB, VERSION)
 
     if not args.language:
         logger.info("No language specified, prompting user to select one")
