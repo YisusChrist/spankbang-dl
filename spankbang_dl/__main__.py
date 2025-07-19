@@ -22,7 +22,7 @@ def main() -> None:
 
     if not args.language:
         logger.info("No language specified, prompting user to select one")
-        language = select_language()
+        language: str = select_language()
     else:
         language = args.language
 

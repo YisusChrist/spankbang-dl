@@ -44,7 +44,7 @@ class VideoDownloaderUI:
                 Defaults to "en".
         """
         # 创建窗口
-        self.translations = get_translations(selected_language)
+        self.translations: dict[str, str] = get_translations(selected_language)
 
         self.win = tk.Tk()
         self.win.title(self.translations["window_title"])
@@ -118,11 +118,11 @@ class VideoDownloaderUI:
 
         # Set minimum sizes for the main frame and its children
         self.win.update_idletasks()  # Update the window to calculate sizes
-        min_width = main_frame.winfo_reqwidth()
-        min_height = main_frame.winfo_reqheight()
+        min_width: int = main_frame.winfo_reqwidth()
+        min_height: int = main_frame.winfo_reqheight()
         self.win.minsize(min_width, min_height)
 
-    def handle_web_content_fetch(self, url) -> requests.Response | None:
+    def handle_web_content_fetch(self, url: str) -> requests.Response | None:
         """
         Fetch web content from the given URL and handle exceptions.
 
@@ -130,10 +130,13 @@ class VideoDownloaderUI:
             url (str): The URL to fetch web content from.
 
         Returns:
-            requests.Response: The response object.
+            requests.Response | None: The response object if successful, None
+            otherwise.
         """
         try:
-            response = fetch_web_content(self.translations, url, stream=True)
+            response: requests.Response = fetch_web_content(
+                self.translations, url, stream=True
+            )
             if response.status_code != 200:
                 self.scr.insert(
                     tk.INSERT,
@@ -152,7 +155,15 @@ class VideoDownloaderUI:
             return None
 
     def extract_and_display_video_info(self, html: str) -> str:
-        """Extract and display video information."""
+        """
+        Extract and display video information.
+
+        Args:
+            html (str): The HTML content of the page.
+
+        Returns:
+            str: The video title.
+        """
         try:
             result, title = extract_video_info(self.translations, html)
 
@@ -172,9 +183,17 @@ class VideoDownloaderUI:
             logger.error(e)
             raise
 
-    def download_video_and_display_progress(self, resp, title):
-        """Download the video and display progress."""
-        content_size = int(resp.headers["Content-Length"]) / MB
+    def download_video_and_display_progress(
+        self, resp: requests.Response, title: str
+    ) -> None:
+        """
+        Download the video and display the download progress.
+
+        Args:
+            resp (requests.Response): The response object containing the video data.
+            title (str): The title of the video.
+        """
+        content_size: float = int(resp.headers["Content-Length"]) / MB
         with open(title + ".mp4", mode="wb") as f:
             self.scr.insert(
                 tk.INSERT,
@@ -199,24 +218,34 @@ class VideoDownloaderUI:
 
     # 创建一个下载按钮
     def _download(self) -> None:
-        """Download the video."""
+        """
+        Callback function to handle the download button click event.
+
+        Retrieves the video URL from the input field, fetches the web content,
+        extracts video information, and downloads the video while displaying
+        progress in the GUI.
+        """
         logger.debug("Downloading video")
 
-        url = self.a_url.get()
+        url: str = self.a_url.get()
 
-        r = self.handle_web_content_fetch(url)
+        r: requests.Response | None = self.handle_web_content_fetch(url)
         if r is None:
             return
-        
-        title = self.extract_and_display_video_info(r.text)
-        resp = self.handle_web_content_fetch(title)
+
+        title: str = self.extract_and_display_video_info(r.text)
+        resp: requests.Response | None = self.handle_web_content_fetch(title)
         if resp is None:
             return
         
         self.download_video_and_display_progress(resp, title)
 
     def _quit(self) -> None:
-        """Quit the program."""
+        """
+        Callback function to handle the quit button click event.
+
+        Closes the main application window and exits the program.
+        """
         logger.debug("Quitting program")
 
         self.win.quit()
@@ -224,17 +253,27 @@ class VideoDownloaderUI:
         exit()
 
     def _about(self) -> None:
-        """Show the about message."""
+        """
+        Callback function to handle the about button click event.
+
+        Displays an informational message box with author, version, and current
+        date.
+        """
         logger.debug("Showing about message")
 
-        today = date.today().strftime("%d/%m/%Y")
-        about_message = self.translations["about_message"].format(
+        today: str = date.today().strftime("%d/%m/%Y")
+        about_message: str = self.translations["about_message"].format(
             AUTHOR, VERSION, today
         )
         messagebox.showinfo("About", about_message)
 
     def _help(self) -> None:
-        """Show the help message."""
+        """
+        Callback function to handle the help button click event.
+
+        Displays an informational message box with usage instructions or help
+        content.
+        """
         logger.debug("Showing help message")
 
         help_message = self.translations["help_message"]

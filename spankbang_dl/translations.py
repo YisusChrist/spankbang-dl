@@ -1,4 +1,5 @@
 import json
+from pathlib import Path
 
 import inquirer  # type: ignore
 from rich import print
@@ -16,7 +17,7 @@ def select_language() -> str:
         str: The selected language.
     """
     logger.debug("Selecting language")
-    available_languages = detect_available_languages()
+    available_languages: list[str] = detect_available_languages()
     if not available_languages:
         print("[red]ERROR[/]: No available languages found")
         logger.error("No available languages found")
@@ -24,7 +25,7 @@ def select_language() -> str:
 
     try:
         # Ask the user to select a column to use as key
-        questions = [
+        questions: list[inquirer.List] = [
             inquirer.List(
                 "language",
                 message="Select your language",
@@ -37,12 +38,12 @@ def select_language() -> str:
     return answer["language"]
 
 
-def detect_available_languages() -> list:
+def detect_available_languages() -> list[str]:
     """
     Detect the available languages in the strings folder.
 
     Returns:
-        list: The available languages.
+        list[str]: The available languages.
     """
     logger.debug("Detecting available languages")
 
@@ -52,7 +53,7 @@ def detect_available_languages() -> list:
     ]
 
 
-def get_translations(selected_language: str) -> dict:
+def get_translations(selected_language: str) -> dict[str, str]:
     """
     Get the translations for the selected language.
 
@@ -60,10 +61,10 @@ def get_translations(selected_language: str) -> dict:
         selected_language (str): The selected language.
 
     Returns:
-        dict: The translations.
+        dict[str, str]: The translations.
     """
     logger.debug("Getting translations")
 
-    file = STRINGS_PATH / f"strings_{selected_language}.json"
+    file: Path = STRINGS_PATH / f"strings_{selected_language}.json"
     with open(file, encoding="utf-8") as json_file:
         return json.load(json_file)
