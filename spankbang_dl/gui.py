@@ -10,8 +10,8 @@ from tqdm.gui import tqdm  # type: ignore
 
 from .consts import AUTHOR, MB
 from .consts import __version__ as VERSION
-from .downloader import extract_video_info, fetch_web_content
 from .logs import logger
+from .scraper import extract_video_info, fetch_web_content
 from .translations import get_translations
 
 # 引入库
