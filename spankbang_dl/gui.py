@@ -6,7 +6,7 @@ from tkinter import messagebox, scrolledtext, ttk
 from typing import Optional
 
 import requests
-from tqdm import tqdm  # type: ignore
+from tqdm.gui import tqdm  # type: ignore
 
 from .consts import AUTHOR, MB
 from .consts import __version__ as VERSION
@@ -230,7 +230,6 @@ class VideoDownloaderUI:
                 total=content_size,
                 unit="MB",
                 # desc=title,
-                gui=True,
                 leave=False,
                 position=1,
                 file=sys.stdout,
