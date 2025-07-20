@@ -155,12 +155,15 @@ class VideoDownloaderUI:
         logger.debug("Minimum size set to: %s", f"{min_width}x{min_height}")
         logger.debug("GUI initialized successfully")
 
-    def handle_web_content_fetch(self, url: str) -> requests.Response | None:
+    def handle_web_content_fetch(
+        self, url: str, stream: bool = False
+    ) -> Optional[requests.Response]:
         """
         Fetch web content from the given URL and handle exceptions.
 
         Args:
             url (str): The URL to fetch web content from.
+            stream (bool): Whether to stream the response content. Defaults to False.
 
         Returns:
             requests.Response | None: The response object if successful, None
@@ -169,7 +172,7 @@ class VideoDownloaderUI:
         logger.debug("Fetching and handling web content for URL: %s", url)
 
         try:
-            response: requests.Response = fetch_web_content(url, True)
+            response: requests.Response = fetch_web_content(url, stream=stream)
             logger.info(
                 "Web content fetched successfully for %s: %s", url, response.status_code
             )
@@ -335,7 +338,9 @@ class VideoDownloaderUI:
         if not video:
             return
 
-        resp: requests.Response | None = self.handle_web_content_fetch(video)
+        resp: requests.Response | None = self.handle_web_content_fetch(
+            video, stream=True
+        )
         if resp is None:
             return
 

@@ -9,12 +9,12 @@ headers: dict[str, str] = {
 }
 
 
-def fetch_web_content(url: str, stream: bool = True) -> requests.Response:
+def fetch_web_content(url: str, **kwargs) -> requests.Response:
     """Fetch the web content from the given URL.
 
     Args:
         url (str): The URL to fetch the content from.
-        stream (bool): Whether to stream the content or not. Defaults to True.
+        **kwargs: Additional keyword arguments to pass to the request.
 
     Returns:
         requests.Response: The response object.
@@ -25,7 +25,7 @@ def fetch_web_content(url: str, stream: bool = True) -> requests.Response:
 
     headers["Referer"] = url
 
-    response: requests.Response = scraper.get(url, headers=headers, stream=stream)
+    response: requests.Response = scraper.get(url, headers=headers, **kwargs)
     response.raise_for_status()
 
     return response
