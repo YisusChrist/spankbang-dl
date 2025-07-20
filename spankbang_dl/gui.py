@@ -2,8 +2,10 @@
 import sys
 import tkinter as tk
 from datetime import date
+from pathlib import Path
 from tkinter import messagebox, scrolledtext, ttk
 from typing import Optional
+from urllib.parse import ParseResult, urlparse
 
 import requests
 from tqdm.gui import tqdm  # type: ignore
@@ -218,8 +220,22 @@ class VideoDownloaderUI:
         logger.debug("Starting video download for URL: %s", resp.url)
 
         content_size: float = int(resp.headers["Content-Length"]) / MB
-        file_name: str = resp.url.split("/")[-1] or "video.mp4"
-        with open(file_name, mode="wb") as f:
+        parsed_url: ParseResult = urlparse(resp.url)
+        if not parsed_url.path:
+            self.scr.insert(
+                tk.INSERT,
+                self.translations["invalid_url_message"].format(resp.url) + "\n",
+            )
+            logger.error("Invalid URL: %s", resp.url)
+            return
+
+        # Extract the media extension from the URL path
+        file_extension: str = parsed_url.path.split(".")[-1]
+        file_name: str = parsed_url.path.split("/")[-1] or f"video.{file_extension}"
+        # Create the file path with the correct extension
+        file_path: Path = Path(file_name).with_suffix(f".{file_extension}")
+
+        with open(file_path, mode="wb") as f:
             self.scr.insert(
                 tk.INSERT,
                 self.translations["total_size_message"].format(content_size) + "\n",
@@ -241,9 +257,9 @@ class VideoDownloaderUI:
             tk.INSERT, self.translations["download_complete_message"] + "\n"
         )
         self.scr.insert(
-            tk.INSERT, self.translations["video_saved"].format(file_name) + "\n"
+            tk.INSERT, self.translations["video_saved"].format(file_path) + "\n"
         )
-        logger.info("Download complete for %r", file_name)
+        logger.info("Download complete for %r", file_path)
 
     # 创建一个下载按钮
     def _download(self) -> None:
