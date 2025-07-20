@@ -3,6 +3,7 @@ import time
 import tkinter as tk
 from datetime import date
 from pathlib import Path
+from threading import Thread
 from tkinter import messagebox, scrolledtext, ttk
 from typing import Optional
 from urllib.parse import ParseResult, urlparse
@@ -265,6 +266,11 @@ class VideoDownloaderUI:
         start_time: float = time.time()
 
         with open(file_path, mode="wb") as f:
+
+            def update_progress() -> None:
+                self.progress_bar["value"] = downloaded
+                self.progress_label.config(text=f"{percent:.1f}%  ETA: {eta}")
+
             for chunk in resp.iter_content(MB):
                 if self.cancel_download:
                     self.scr.insert(
@@ -285,15 +291,19 @@ class VideoDownloaderUI:
                 remaining: float = (content_size - downloaded) / rate if rate > 0 else 0
                 eta: str = time.strftime("%M:%S", time.gmtime(remaining))
 
-                self.progress_bar["value"] = downloaded
-                self.progress_label.config(text=f"{percent:.1f}%  ETA: {eta}")
-                self.win.update_idletasks()  # Refresh GUI
+                self.win.after(0, update_progress)  # Schedule GUI update
 
-        self.scr.insert(
-            tk.INSERT, self.translations["download_complete_message"] + "\n"
+        self.win.after(
+            0,
+            lambda: self.scr.insert(
+                tk.INSERT, self.translations["download_complete_message"] + "\n"
+            ),
         )
-        self.scr.insert(
-            tk.INSERT, self.translations["video_saved"].format(file_path) + "\n"
+        self.win.after(
+            0,
+            lambda: self.scr.insert(
+                tk.INSERT, self.translations["video_saved"].format(file_path) + "\n"
+            ),
         )
         logger.info("Download complete for %r", file_path)
 
@@ -330,7 +340,12 @@ class VideoDownloaderUI:
             return
 
         try:
-            self.download_video_and_display_progress(resp)
+            thread = Thread(
+                target=self.download_video_and_display_progress,
+                args=(resp,),
+                daemon=True,
+            )
+            thread.start()
         except Exception as e:
             self.scr.insert(
                 tk.INSERT,
