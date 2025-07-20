@@ -10,45 +10,33 @@ headers: dict[str, str] = {
 }
 
 
-def fetch_web_content(
-    translations: dict[str, str], url: str, stream: bool = True
-) -> requests.Response:
+def fetch_web_content(url: str, stream: bool = True) -> requests.Response:
     """Fetch the web content from the given URL.
 
     Args:
-        translations (dict[str, str]): A dictionary containing translation strings.
         url (str): The URL to fetch the content from.
-        stream (bool, optional): Whether to stream the content or not. Defaults to True.
+        stream (bool): Whether to stream the content or not. Defaults to True.
 
     Returns:
         requests.Response: The response object.
-
-    Raises:
-        requests.exceptions.RequestException: If there is an error during the request.
     """
-    try:
-        scraper: cloudscraper.CloudScraper = cloudscraper.create_scraper()
+    logger.debug("Fetching web content from URL: %s", url)
 
-        headers["Referer"] = url
+    scraper: cloudscraper.CloudScraper = cloudscraper.create_scraper()
 
-        response: requests.Response = scraper.get(url, headers=headers, stream=stream)
-        response.raise_for_status()
+    headers["Referer"] = url
 
-        print(translations["success_message"].format(str(response.status_code)))
-        return response
+    response: requests.Response = scraper.get(url, headers=headers, stream=stream)
+    response.raise_for_status()
 
-    except requests.exceptions.RequestException as e:
-        print(translations["failure_message"].format(str(e)))
-        logger.error(e)
-        raise
+    return response
 
 
-def extract_video_info(translations: dict[str, str], html: str) -> tuple[str, str]:
+def extract_video_info(html: str) -> tuple[str, str]:
     """
     Extract video information from the HTML content.
 
     Args:
-        translations (dict[str, str]): A dictionary containing translation strings.
         html (str): The HTML content to extract information from.
 
     Returns:
@@ -57,18 +45,15 @@ def extract_video_info(translations: dict[str, str], html: str) -> tuple[str, st
     Raises:
         Exception: If the video information cannot be extracted.
     """
-    try:
-        result: re.Match[str] | None = re.search(
-            '<video.*?src="(.*?)".*?>.*?</video>', html, re.S
-        )
-        src: str = result.group(1)
-        result2: re.Match[str] | None = re.search(
-            "<title.*?>Watch(.*?) - .*?</title.*?>", html, re.S
-        )
-        title: str = result2.group(1)
+    logger.debug("Extracting video information from HTML content")
 
-        return title, src
-    except Exception as e:
-        print(translations["video_not_found"], e)
-        logger.error(e)
-        raise
+    result: re.Match[str] | None = re.search(
+        '<video.*?src="(.*?)".*?>.*?</video>', html, re.S
+    )
+    src: str = result.group(1)
+    result2: re.Match[str] | None = re.search(
+        "<title.*?>Watch(.*?) - .*?</title.*?>", html, re.S
+    )
+    title: str = result2.group(1).strip()
+
+    return title, src

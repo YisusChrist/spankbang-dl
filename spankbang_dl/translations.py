@@ -45,8 +45,6 @@ def detect_available_languages() -> list[str]:
     Returns:
         list[str]: The available languages.
     """
-    logger.debug("Detecting available languages")
-
     return [
         file.stem.replace("strings_", "")
         for file in STRINGS_PATH.glob("strings_*.json")
@@ -63,7 +61,7 @@ def get_translations(selected_language: str) -> dict[str, str]:
     Returns:
         dict[str, str]: The translations.
     """
-    logger.debug("Getting translations")
+    logger.debug("Loading translations for language: %s", selected_language)
 
     file: Path = STRINGS_PATH / f"strings_{selected_language}.json"
     with open(file, encoding="utf-8") as json_file:

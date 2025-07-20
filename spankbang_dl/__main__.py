@@ -1,6 +1,7 @@
 """Main module for the SpankBang Downloader."""
 
 from argparse import Namespace
+
 from core_helpers.updates import check_updates
 from rich.traceback import install
 
@@ -15,6 +16,7 @@ from .utils import exit_session
 
 def main() -> None:
     args: Namespace = get_parsed_args()
+    install(show_locals=args.debug)
     logger.info("Start of session")
 
     if GITHUB:
@@ -35,5 +37,4 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    install(show_locals=False)
     main()

@@ -1,10 +1,11 @@
 {
     "welcome_message": "Introduce la URL de Spankbang:",
-    "success_message": "¡Contenido web descargado con éxito! Código de estado: {}",
     "failure_message": "¡Fallo al descargar el contenido web! Código de estado: {}",
+    "warning_title": "Advertencia",
+    "empty_url_message": "¡No se proporcionó ninguna URL para descargar!",
     "download_prompt": "¿Quieres descargar {} (este video) [s/n]:",
     "downloading_video": "Preparando para descargar el video: {}",
-    "total_size_message": "Tamaño total: {} MB, comenzando...",
+    "total_size_message": "Tamaño total: {:.2f} MB, comenzando...",
     "video_saved": "Video guardado: {}",
     "download_failed": "Error al descargar el video",
     "video_not_found": "Información del video no encontrada en el contenido web.",

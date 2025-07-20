@@ -40,26 +40,33 @@ class VideoDownloaderUI:
         Initialize the class.
 
         Args:
-            selected_language (str, optional): The selected language.
-                Defaults to "en".
+            selected_language (str, optional): The selected language. Defaults
+            to "en".
         """
-        # 创建窗口
-        self.translations: dict[str, str] = get_translations(selected_language)
+        logger.debug("Creating GUI with selected language: %s", selected_language)
 
+        # Load translations for the selected language
+        self.translations: dict[str, str] = get_translations(selected_language)
+        logger.debug("Translations loaded for language: %s", selected_language)
+
+        # 创建窗口
         self.win = tk.Tk()
         self.win.title(self.translations["window_title"])
         self.win.geometry("800x400")  # Set window size to 800x400 pixels
         self.win.resizable(True, True)  # The window can be resized in both directions
+        logger.debug("Window created with title: %s", self.translations["window_title"])
 
         # Create a main frame to center-align the content
         main_frame = ttk.Frame(self.win)
         main_frame.pack(expand=True, fill="both")
+        logger.debug("Main frame created and packed")
 
         # Create UI elements with translated text and icons
         aLabel = ttk.Label(main_frame, text=self.translations["enter_url_label"])
         aLabel.grid(column=0, row=0, padx=10, pady=10)
         self.a_url = ttk.Entry(main_frame)
         self.a_url.grid(column=1, row=0, padx=10, pady=10)
+        logger.debug("URL entry field created")
 
         # Replace with your icon file
         action = ttk.Button(
@@ -70,6 +77,7 @@ class VideoDownloaderUI:
             compound=tk.LEFT,
         )
         action.grid(column=0, row=2, columnspan=2, padx=10, pady=10)
+        logger.debug("Download button created")
 
         action2 = ttk.Button(
             main_frame,
@@ -79,6 +87,7 @@ class VideoDownloaderUI:
             compound=tk.LEFT,
         )
         action2.grid(column=1, row=2, columnspan=2, padx=10, pady=10)
+        logger.debug("Quit button created")
 
         action3 = ttk.Button(
             main_frame,
@@ -88,6 +97,7 @@ class VideoDownloaderUI:
             compound=tk.LEFT,
         )
         action3.grid(column=0, row=3, columnspan=2, padx=10, pady=10)
+        logger.debug("About button created")
 
         action4 = ttk.Button(
             main_frame,
@@ -97,6 +107,7 @@ class VideoDownloaderUI:
             compound=tk.LEFT,
         )
         action4.grid(column=1, row=3, columnspan=2, padx=10, pady=10)
+        logger.debug("Help button created")
 
         # Create a scrolled text widget
         scrolW = 80
@@ -105,22 +116,27 @@ class VideoDownloaderUI:
             main_frame, width=scrolW, height=scrolH, wrap=tk.WORD
         )
         self.scr.grid(column=0, row=1, columnspan=2, padx=10, pady=10)
+        logger.debug("Scrolled text widget created")
 
         # Create a progress bar
         self.progress_bar = ttk.Progressbar(
             main_frame, orient="horizontal", length=400, mode="determinate"
         )
         self.progress_bar.grid(column=0, row=4, columnspan=2, padx=10, pady=10)
+        logger.debug("Progress bar created")
 
         # Create a menu bar
         menuBar = tk.Menu(self.win)
         self.win.config(menu=menuBar)
+        logger.debug("Menu bar created")
 
         # Set minimum sizes for the main frame and its children
         self.win.update_idletasks()  # Update the window to calculate sizes
         min_width: int = main_frame.winfo_reqwidth()
         min_height: int = main_frame.winfo_reqheight()
         self.win.minsize(min_width, min_height)
+        logger.debug("Minimum size set to: %s", f"{min_width}x{min_height}")
+        logger.debug("GUI initialized successfully")
 
     def handle_web_content_fetch(self, url: str) -> requests.Response | None:
         """
@@ -133,55 +149,63 @@ class VideoDownloaderUI:
             requests.Response | None: The response object if successful, None
             otherwise.
         """
-        try:
-            response: requests.Response = fetch_web_content(
-                self.translations, url, stream=True
-            )
-            if response.status_code != 200:
-                self.scr.insert(
-                    tk.INSERT,
-                    self.translations["failure_message"]
-                    + str(response.status_code)
-                    + "\n",
-                )
-            return response
+        logger.debug("Fetching and handling web content for URL: %s", url)
 
+        try:
+            response: requests.Response = fetch_web_content(url, True)
+            logger.info(
+                "Web content fetched successfully for %s: %s", url, response.status_code
+            )
+            return response
         except requests.exceptions.RequestException as e:
-            logger.error(e)
+            status_code: str = (
+                str(e.response.status_code) if e.response else "No response"
+            )
             self.scr.insert(
                 tk.INSERT,
-                self.translations["download_failed_message"].format(str(e)) + "\n",
+                self.translations["failure_message"].format(status_code) + "\n",
+            )
+            logger.error(
+                "Failed to fetch content from %s: %s", url, status_code, exc_info=True
             )
             return None
 
-    def extract_and_display_video_info(self, html: str) -> str:
+    def extract_and_display_video_info(self, url: str, html: str) -> str:
         """
         Extract and display video information.
 
         Args:
+            url (str): The URL of the video page.
             html (str): The HTML content of the page.
 
         Returns:
             str: The video title.
         """
+        logger.debug("Extracting and displaying video information for URL: %s", url)
+
         try:
-            result, title = extract_video_info(self.translations, html)
-
-            # Display the translated messages and labels
-            self.scr.insert(
-                tk.INSERT, self.translations["download_video_message"].format(title)
-            )
-            self.scr.insert(tk.INSERT, self.translations["video_title"].format(title))
-            self.scr.insert(tk.INSERT, self.translations["video_url"].format(result))
-
-            return title
-        except Exception as e:
+            result, title = extract_video_info(html)
+        except ValueError as e:
             self.scr.insert(
                 tk.INSERT,
-                self.translations["download_failed_message"].format(str(e)) + "\n",
+                self.translations["video_not_found"].format(str(e)) + "\n",
             )
-            logger.error(e)
-            raise
+            logger.error(
+                "Video information not found in the web content", exc_info=True
+            )
+            return "unknown-video"
+
+        # Display the translated messages and labels
+        self.scr.insert(
+            tk.INSERT, self.translations["download_video_message"].format(url) + "\n"
+        )
+        self.scr.insert(
+            tk.INSERT, self.translations["video_title"].format(title) + "\n"
+        )
+        self.scr.insert(tk.INSERT, self.translations["video_url"].format(result) + "\n")
+        logger.debug("Extracted video info: Title: %r, URL: %s", title, result)
+
+        return title
 
     def download_video_and_display_progress(
         self, resp: requests.Response, title: str
@@ -193,12 +217,16 @@ class VideoDownloaderUI:
             resp (requests.Response): The response object containing the video data.
             title (str): The title of the video.
         """
+        logger.debug("Starting video download for title: %r", title)
+
         content_size: float = int(resp.headers["Content-Length"]) / MB
-        with open(title + ".mp4", mode="wb") as f:
+        file_name: str = title + ".mp4"
+        with open(file_name, mode="wb") as f:
             self.scr.insert(
                 tk.INSERT,
-                self.translations["total_size_message"].format(content_size),
+                self.translations["total_size_message"].format(content_size) + "\n",
             )
+            logger.debug("Total size of the video: {:.2f} MB".format(content_size))
             for data in tqdm(
                 iterable=resp.iter_content(MB),
                 total=content_size,
@@ -212,9 +240,13 @@ class VideoDownloaderUI:
                 f.write(data)
                 # Update the progress bar
                 # self.progress_bar["value"] = download_progress_percentage
-            self.scr.insert(
-                tk.INSERT, self.translations["download_complete_message"] + "\n"
-            )
+        self.scr.insert(
+            tk.INSERT, self.translations["download_complete_message"] + "\n"
+        )
+        self.scr.insert(
+            tk.INSERT, self.translations["video_saved"].format(file_name) + "\n"
+        )
+        logger.info("Download complete for %r", file_name)
 
     # 创建一个下载按钮
     def _download(self) -> None:
@@ -225,20 +257,35 @@ class VideoDownloaderUI:
         extracts video information, and downloads the video while displaying
         progress in the GUI.
         """
-        logger.debug("Downloading video")
+        logger.debug("Download button clicked")
 
         url: str = self.a_url.get()
+        if not url:
+            messagebox.showwarning(
+                self.translations["warning_title"],
+                self.translations["empty_url_message"],
+            )
+            logger.warning("No URL provided for download!")
+            return
 
         r: requests.Response | None = self.handle_web_content_fetch(url)
         if r is None:
             return
 
-        title: str = self.extract_and_display_video_info(r.text)
+        title: str = self.extract_and_display_video_info(url, r.text)
         resp: requests.Response | None = self.handle_web_content_fetch(title)
         if resp is None:
             return
-        
-        self.download_video_and_display_progress(resp, title)
+
+        try:
+            self.download_video_and_display_progress(resp, title)
+        except Exception as e:
+            self.scr.insert(
+                tk.INSERT,
+                self.translations["download_failed_message"].format(str(e)) + "\n",
+            )
+            logger.error("Error downloading video from %s", url, exc_info=True)
+            raise
 
     def _quit(self) -> None:
         """
@@ -246,11 +293,11 @@ class VideoDownloaderUI:
 
         Closes the main application window and exits the program.
         """
-        logger.debug("Quitting program")
+        logger.debug("Quit button clicked")
 
         self.win.quit()
         self.win.destroy()
-        exit()
+        logger.debug("Destroyed the main window")
 
     def _about(self) -> None:
         """
@@ -259,13 +306,13 @@ class VideoDownloaderUI:
         Displays an informational message box with author, version, and current
         date.
         """
-        logger.debug("Showing about message")
+        logger.debug("About button clicked")
 
         today: str = date.today().strftime("%d/%m/%Y")
         about_message: str = self.translations["about_message"].format(
             AUTHOR, VERSION, today
         )
-        messagebox.showinfo("About", about_message)
+        messagebox.showinfo(self.translations["about_button"], about_message)
 
     def _help(self) -> None:
         """
@@ -274,13 +321,14 @@ class VideoDownloaderUI:
         Displays an informational message box with usage instructions or help
         content.
         """
-        logger.debug("Showing help message")
+        logger.debug("Help button clicked")
 
-        help_message = self.translations["help_message"]
-        messagebox.showinfo("Help", help_message)
+        messagebox.showinfo(
+            self.translations["help_button"], self.translations["help_message"]
+        )
 
     def run(self) -> None:
         """Run the program."""
-        logger.debug("Running program")
+        logger.debug("Starting the main loop of the GUI")
 
         self.win.mainloop()
