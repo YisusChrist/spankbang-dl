@@ -1,7 +1,6 @@
-import re
-
 import cloudscraper  # type: ignore
 import requests
+from bs4 import BeautifulSoup
 
 from .logs import logger
 
@@ -47,13 +46,32 @@ def extract_video_info(html: str) -> tuple[str, str]:
     """
     logger.debug("Extracting video information from HTML content")
 
-    result: re.Match[str] | None = re.search(
-        '<video.*?src="(.*?)".*?>.*?</video>', html, re.S
-    )
-    src: str = result.group(1)
-    result2: re.Match[str] | None = re.search(
-        "<title.*?>Watch(.*?) - .*?</title.*?>", html, re.S
-    )
-    title: str = result2.group(1).strip()
+    soup = BeautifulSoup(html, "html.parser")
+
+    # Find the video container div
+    video_container = soup.find("div", id="video_container")
+    if not video_container:
+        raise Exception("Video container not found in HTML.")
+
+    # Find the <video> tag inside the container
+    video_tag = video_container.find("video")
+    if not video_tag:
+        raise Exception(
+            "Video tag with 'src' attribute not found inside video container."
+        )
+
+    src: str = video_tag.find("source")["src"]
+
+    # Extract the title from the <title> tag
+    title_tag = soup.find("title")
+    if not title_tag:
+        raise Exception("Title tag not found in HTML.")
+
+    title_text: str = title_tag.get_text(strip=True)
+    if not title_text.startswith("Watch"):
+        raise Exception("Title format not recognized.")
+
+    # Extract the portion between "Watch" and " -"
+    title: str = title_text.removeprefix("Watch").split(" - ")[0].strip()
 
     return title, src

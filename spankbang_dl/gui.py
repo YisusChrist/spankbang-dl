@@ -1,16 +1,17 @@
 # 写UI
-import sys
 import tkinter as tk
 from datetime import date
+from pathlib import Path
 from tkinter import messagebox, scrolledtext, ttk
+from typing import Optional
+from urllib.parse import ParseResult, urlparse
 
 import requests
-from tqdm import tqdm  # type: ignore
 
 from .consts import AUTHOR, MB
 from .consts import __version__ as VERSION
-from .downloader import extract_video_info, fetch_web_content
 from .logs import logger
+from .scraper import extract_video_info, fetch_web_content
 from .translations import get_translations
 
 # 引入库
@@ -170,7 +171,7 @@ class VideoDownloaderUI:
             )
             return None
 
-    def extract_and_display_video_info(self, url: str, html: str) -> str:
+    def extract_and_display_video_info(self, url: str, html: str) -> Optional[str]:
         """
         Extract and display video information.
 
@@ -179,12 +180,12 @@ class VideoDownloaderUI:
             html (str): The HTML content of the page.
 
         Returns:
-            str: The video title.
+            str: The video source URL if found, otherwise an empty string.
         """
         logger.debug("Extracting and displaying video information for URL: %s", url)
 
         try:
-            result, title = extract_video_info(html)
+            title, video = extract_video_info(html)
         except ValueError as e:
             self.scr.insert(
                 tk.INSERT,
@@ -193,7 +194,7 @@ class VideoDownloaderUI:
             logger.error(
                 "Video information not found in the web content", exc_info=True
             )
-            return "unknown-video"
+            return ""
 
         # Display the translated messages and labels
         self.scr.insert(
@@ -202,51 +203,63 @@ class VideoDownloaderUI:
         self.scr.insert(
             tk.INSERT, self.translations["video_title"].format(title) + "\n"
         )
-        self.scr.insert(tk.INSERT, self.translations["video_url"].format(result) + "\n")
-        logger.debug("Extracted video info: Title: %r, URL: %s", title, result)
+        self.scr.insert(tk.INSERT, self.translations["video_url"].format(video) + "\n")
+        logger.debug("Extracted video info: Title: %r, URL: %s", title, video)
 
-        return title
+        return video
 
-    def download_video_and_display_progress(
-        self, resp: requests.Response, title: str
-    ) -> None:
+    def download_video_and_display_progress(self, resp: requests.Response) -> None:
         """
         Download the video and display the download progress.
 
         Args:
             resp (requests.Response): The response object containing the video data.
-            title (str): The title of the video.
         """
-        logger.debug("Starting video download for title: %r", title)
+        logger.debug("Starting video download for URL: %s", resp.url)
 
         content_size: float = int(resp.headers["Content-Length"]) / MB
-        file_name: str = title + ".mp4"
-        with open(file_name, mode="wb") as f:
+        parsed_url: ParseResult = urlparse(resp.url)
+        if not parsed_url.path:
+            self.scr.insert(
+                tk.INSERT,
+                self.translations["invalid_url_message"].format(resp.url) + "\n",
+            )
+            logger.error("Invalid URL: %s", resp.url)
+            return
+
+        # Extract the media extension from the URL path
+        file_extension: str = parsed_url.path.split(".")[-1]
+        file_name: str = parsed_url.path.split("/")[-1] or f"video.{file_extension}"
+        # Create the file path with the correct extension
+        file_path: Path = Path(file_name).with_suffix(f".{file_extension}")
+
+        # Set up progress bar
+        self.progress_bar["maximum"] = content_size
+        self.progress_bar["value"] = 0
+        self.win.update_idletasks()  # Ensure initial draw
+
+        with open(file_path, mode="wb") as f:
             self.scr.insert(
                 tk.INSERT,
                 self.translations["total_size_message"].format(content_size) + "\n",
             )
             logger.debug("Total size of the video: {:.2f} MB".format(content_size))
-            for data in tqdm(
-                iterable=resp.iter_content(MB),
-                total=content_size,
-                unit="MB",
-                desc=title,
-                gui=True,
-                leave=False,
-                position=1,
-                file=sys.stdout,
-            ):
-                f.write(data)
-                # Update the progress bar
-                # self.progress_bar["value"] = download_progress_percentage
+            downloaded = 0.0
+            for chunk in resp.iter_content(MB):
+                if not chunk:
+                    continue
+                f.write(chunk)
+                downloaded += 1
+                self.progress_bar["value"] = downloaded
+                self.win.update_idletasks()  # Refresh GUI
+
         self.scr.insert(
             tk.INSERT, self.translations["download_complete_message"] + "\n"
         )
         self.scr.insert(
-            tk.INSERT, self.translations["video_saved"].format(file_name) + "\n"
+            tk.INSERT, self.translations["video_saved"].format(file_path) + "\n"
         )
-        logger.info("Download complete for %r", file_name)
+        logger.info("Download complete for %r", file_path)
 
     # 创建一个下载按钮
     def _download(self) -> None:
@@ -272,13 +285,16 @@ class VideoDownloaderUI:
         if r is None:
             return
 
-        title: str = self.extract_and_display_video_info(url, r.text)
-        resp: requests.Response | None = self.handle_web_content_fetch(title)
+        video: str | None = self.extract_and_display_video_info(url, r.text)
+        if not video:
+            return
+
+        resp: requests.Response | None = self.handle_web_content_fetch(video)
         if resp is None:
             return
 
         try:
-            self.download_video_and_display_progress(resp, title)
+            self.download_video_and_display_progress(resp)
         except Exception as e:
             self.scr.insert(
                 tk.INSERT,
