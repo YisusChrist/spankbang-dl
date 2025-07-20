@@ -1,4 +1,5 @@
 # 写UI
+import time
 import tkinter as tk
 from datetime import date
 from pathlib import Path
@@ -123,8 +124,22 @@ class VideoDownloaderUI:
         self.progress_bar = ttk.Progressbar(
             main_frame, orient="horizontal", length=400, mode="determinate"
         )
-        self.progress_bar.grid(column=0, row=4, columnspan=2, padx=10, pady=10)
+        self.progress_bar.grid(column=0, row=4, columnspan=2, padx=10, pady=(10, 0))
         logger.debug("Progress bar created")
+
+        # Percentage label
+        self.progress_label = ttk.Label(main_frame, text="0%")
+        self.progress_label.grid(column=0, row=5, columnspan=2)
+        logger.debug("Progress label created")
+
+        # Cancel button
+        self.cancel_download = False  # flag to signal cancellation
+        cancel_button = ttk.Button(
+            main_frame,
+            text=self.translations["cancel_button"],
+            command=self._cancel_download,
+        )
+        cancel_button.grid(column=0, row=6, columnspan=2, pady=(5, 10))
 
         # Create a menu bar
         menuBar = tk.Menu(self.win)
@@ -227,6 +242,12 @@ class VideoDownloaderUI:
             logger.error("Invalid URL: %s", resp.url)
             return
 
+        self.scr.insert(
+            tk.INSERT,
+            self.translations["total_size_message"].format(content_size) + "\n",
+        )
+        logger.debug("Total size of the video: {:.2f} MB".format(content_size))
+
         # Extract the media extension from the URL path
         file_extension: str = parsed_url.path.split(".")[-1]
         file_name: str = parsed_url.path.split("/")[-1] or f"video.{file_extension}"
@@ -236,21 +257,36 @@ class VideoDownloaderUI:
         # Set up progress bar
         self.progress_bar["maximum"] = content_size
         self.progress_bar["value"] = 0
+        self.progress_label.config(text="0%")
+        self.cancel_download = False  # reset cancel flag
         self.win.update_idletasks()  # Ensure initial draw
 
+        downloaded = 0
+        start_time: float = time.time()
+
         with open(file_path, mode="wb") as f:
-            self.scr.insert(
-                tk.INSERT,
-                self.translations["total_size_message"].format(content_size) + "\n",
-            )
-            logger.debug("Total size of the video: {:.2f} MB".format(content_size))
-            downloaded = 0.0
             for chunk in resp.iter_content(MB):
+                if self.cancel_download:
+                    self.scr.insert(
+                        tk.INSERT, self.translations["cancelled_message"] + "\n"
+                    )
+                    logger.info("Download cancelled by user.")
+                    return
+
                 if not chunk:
                     continue
+
                 f.write(chunk)
                 downloaded += 1
+
+                percent: float = (downloaded / content_size) * 100
+                elapsed: float = time.time() - start_time
+                rate: float = downloaded / elapsed if elapsed > 0 else 0
+                remaining: float = (content_size - downloaded) / rate if rate > 0 else 0
+                eta: str = time.strftime("%M:%S", time.gmtime(remaining))
+
                 self.progress_bar["value"] = downloaded
+                self.progress_label.config(text=f"{percent:.1f}%  ETA: {eta}")
                 self.win.update_idletasks()  # Refresh GUI
 
         self.scr.insert(
@@ -342,6 +378,11 @@ class VideoDownloaderUI:
         messagebox.showinfo(
             self.translations["help_button"], self.translations["help_message"]
         )
+
+    def _cancel_download(self) -> None:
+        """Sets the cancel flag to True."""
+        logger.debug("Cancel download button clicked")
+        self.cancel_download = True
 
     def run(self) -> None:
         """Run the program."""
