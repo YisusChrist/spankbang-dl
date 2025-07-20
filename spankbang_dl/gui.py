@@ -1,5 +1,4 @@
 # 写UI
-import sys
 import tkinter as tk
 from datetime import date
 from pathlib import Path
@@ -8,7 +7,6 @@ from typing import Optional
 from urllib.parse import ParseResult, urlparse
 
 import requests
-from tqdm.gui import tqdm  # type: ignore
 
 from .consts import AUTHOR, MB
 from .consts import __version__ as VERSION
@@ -235,24 +233,26 @@ class VideoDownloaderUI:
         # Create the file path with the correct extension
         file_path: Path = Path(file_name).with_suffix(f".{file_extension}")
 
+        # Set up progress bar
+        self.progress_bar["maximum"] = content_size
+        self.progress_bar["value"] = 0
+        self.win.update_idletasks()  # Ensure initial draw
+
         with open(file_path, mode="wb") as f:
             self.scr.insert(
                 tk.INSERT,
                 self.translations["total_size_message"].format(content_size) + "\n",
             )
             logger.debug("Total size of the video: {:.2f} MB".format(content_size))
-            for data in tqdm(
-                iterable=resp.iter_content(MB),
-                total=content_size,
-                unit="MB",
-                # desc=title,
-                leave=False,
-                position=1,
-                file=sys.stdout,
-            ):
-                f.write(data)
-                # Update the progress bar
-                # self.progress_bar["value"] = download_progress_percentage
+            downloaded = 0.0
+            for chunk in resp.iter_content(MB):
+                if not chunk:
+                    continue
+                f.write(chunk)
+                downloaded += 1
+                self.progress_bar["value"] = downloaded
+                self.win.update_idletasks()  # Refresh GUI
+
         self.scr.insert(
             tk.INSERT, self.translations["download_complete_message"] + "\n"
         )
