@@ -1,6 +1,4 @@
-[中文版本](.github/README.zh.md)
-
-# Spankbang-Downloader
+[中文版本](.github/README.zh.md) ∙ English
 
 <p align="center">
     <img width="750" src="https://github.com/user-attachments/assets/cde88146-0b5a-4e3a-9f1f-dde7de0ad2d5" alt="SpankBang logo">
@@ -53,22 +51,21 @@
 <details>
 <summary>Table of Contents</summary>
 
-- [Spankbang-Downloader](#spankbang-downloader)
-  - [Requirements](#requirements)
-  - [Installation](#installation)
-    - [From PyPI](#from-pypi)
-    - [Manual installation](#manual-installation)
-    - [Uninstall](#uninstall)
-  - [Usage](#usage)
-    - [Example of execution](#example-of-execution)
-  - [Contributors](#contributors)
-    - [How do I contribute to spankbang-dl?](#how-do-i-contribute-to-spankbang-dl)
-  - [License](#license)
-  - [Credits](#credits)
+- [Requirements](#requirements)
+- [Installation](#installation)
+  - [From PyPI](#from-pypi)
+  - [Manual installation](#manual-installation)
+  - [Uninstall](#uninstall)
+- [Usage](#usage)
+  - [Example of execution](#example-of-execution)
+- [Contributors](#contributors)
+  - [How do I contribute to spankbang-dl?](#how-do-i-contribute-to-spankbang-dl)
+- [License](#license)
+- [Credits](#credits)
 
 </details>
 
-## Requirements
+# Requirements
 
 Here's a breakdown of the packages needed and their versions:
 
@@ -83,9 +80,9 @@ Here's a breakdown of the packages needed and their versions:
 > [!NOTE]
 > The software has been developed and tested using Python `3.13.5`. The minimum required version to run the software is Python 3.9. Although the software may work with previous versions, it is not guaranteed.
 
-## Installation
+# Installation
 
-### From PyPI
+## From PyPI
 
 `spankbang-dl` can be installed easily as a PyPI package. Just run the following command:
 
@@ -102,7 +99,7 @@ pip3 install spankbang-dl
 
 The program can now be ran from a terminal with the `spankbang-dl` command.
 
-### Manual installation
+## Manual installation
 
 If you prefer to install the program manually, follow these steps:
 
@@ -134,7 +131,7 @@ If you prefer, you can directly install the package from the repository using `p
 pipx install git+https://github.com/YisusChrist/spankbang-dl.git
 ```
 
-### Uninstall
+## Uninstall
 
 If you installed it using `pip`/`pipx`, you can use the following command:
 
@@ -142,7 +139,7 @@ If you installed it using `pip`/`pipx`, you can use the following command:
 pipx uninstall spankbang-dl
 ```
 
-## Usage
+# Usage
 
 > [!TIP]
 > For more information about the usage of the program, run `spankbang-dl --help` or `spankbang-dl -h`.
@@ -151,15 +148,15 @@ pipx uninstall spankbang-dl
 
 The program can be run from the terminal with the `spankbang-dl` command. It will open a window where you can introduce the URL of the video you want to download.
 
-### Example of execution
+## Example of execution
 
 https://github.com/user-attachments/assets/32c3911a-a756-44f8-b4a5-ba4ba472dc9e
 
-## Contributors
+# Contributors
 
 <a href="https://github.com/YisusChrist/spankbang-dl/graphs/contributors"><img src="https://contrib.rocks/image?repo=YisusChrist/spankbang-dl" /></a>
 
-### How do I contribute to spankbang-dl?
+## How do I contribute to spankbang-dl?
 
 Before you participate in our delightful community, please read the [code of conduct](https://github.com/YisusChrist/.github/blob/main/CODE_OF_CONDUCT.md).
 
@@ -169,11 +166,11 @@ We also need people to test out pull requests. So take a look through [the open 
 
 See [Contributing Guidelines](https://github.com/YisusChrist/.github/blob/main/CONTRIBUTING.md) for more details.
 
-## License
+# License
 
 `spankbang-dl` is released under the [GPL-3.0 License](https://opensource.org/license/GPL-3.0).
 
-## Credits
+# Credits
 
 <img src="https://avatars.githubusercontent.com/u/68385729" width="100px;" alt="Green Hat" border-radius="50% !important;" />
 
