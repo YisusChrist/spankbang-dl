@@ -3,7 +3,7 @@
 # Spankbang-Downloader
 
 <p align="center">
-    <img width="350" src="https://logos-world.net/wp-content/uploads/2023/01/SpankBang-Logo.png" alt="SpankBang logo">
+    <img width="750" src="https://github.com/user-attachments/assets/cde88146-0b5a-4e3a-9f1f-dde7de0ad2d5" alt="SpankBang logo">
 </p>
 
 <p align="center">
