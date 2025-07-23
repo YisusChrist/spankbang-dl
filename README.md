@@ -153,7 +153,7 @@ The program can be run from the terminal with the `spankbang-dl` command. It wil
 
 ### Example of execution
 
-
+https://github.com/user-attachments/assets/32c3911a-a756-44f8-b4a5-ba4ba472dc9e
 
 ## Contributors
 
