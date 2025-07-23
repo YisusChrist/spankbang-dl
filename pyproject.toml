@@ -9,7 +9,7 @@ repository = "https://github.com/yisuschrist/spankbang-dl"
 include = [{ path = "spankbang_dl/strings", format = ["sdist", "wheel"] }]
 
 [tool.poetry.dependencies]
-python = "^3.11"
+python = "^3.9"
 beautifulsoup4 = "^4.13.4"
 cloudscraper = "^1.2.71"
 core-helpers = "^1.2.0"
