@@ -24,7 +24,4 @@ STRINGS_PATH = (Path(__file__).parent / "strings").resolve()
 EXIT_SUCCESS = 0
 EXIT_FAILURE = 1
 
-DEBUG = False
-PROFILE = False
-
 MB = 1024 * 1024
