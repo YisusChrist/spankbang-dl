@@ -2,10 +2,10 @@ import json
 from pathlib import Path
 
 import inquirer  # type: ignore
+from core_helpers.logs import logger
 from rich import print
 
 from .consts import EXIT_FAILURE, STRINGS_PATH
-from .logs import logger
 from .utils import exit_session
 
 

@@ -9,10 +9,10 @@ from typing import Optional
 from urllib.parse import ParseResult, urlparse
 
 import requests
+from core_helpers.logs import logger
 
 from .consts import AUTHOR, MB
 from .consts import __version__ as VERSION
-from .logs import logger
 from .scraper import extract_video_info, fetch_web_content
 from .translations import get_translations
 

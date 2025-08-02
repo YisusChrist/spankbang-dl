@@ -1,6 +1,7 @@
 """Constants for the project."""
 
 from pathlib import Path
+
 from core_helpers.xdg_paths import PathType, get_user_path
 
 try:
