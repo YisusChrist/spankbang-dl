@@ -67,10 +67,11 @@ def extract_video_info(html: str) -> tuple[str, str]:
         raise Exception("Title tag not found in HTML.")
 
     title_text: str = title_tag.get_text(strip=True)
-    if not title_text.startswith("Watch"):
-        raise Exception("Title format not recognized.")
 
     # Extract the portion between "Watch" and " -"
-    title: str = title_text.removeprefix("Watch").split(" - ")[0].strip()
+    if title_text.startswith("Watch"):
+        title: str = title_text.removeprefix("Watch").split(" - ")[0].strip()
+    else:
+        title = title_text
 
     return title, src
