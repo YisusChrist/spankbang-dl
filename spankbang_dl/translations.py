@@ -5,8 +5,8 @@ import inquirer  # type: ignore
 from core_helpers.logs import logger
 from rich import print
 
-from .consts import EXIT_FAILURE, STRINGS_PATH
-from .utils import exit_session
+from spankbang_dl.consts import EXIT_FAILURE, STRINGS_PATH
+from spankbang_dl.utils import exit_session
 
 
 def select_language() -> str:

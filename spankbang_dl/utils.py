@@ -3,7 +3,7 @@ import sys
 from core_helpers.logs import logger
 from rich import print
 
-from .consts import EXIT_FAILURE, LOG_PATH
+from spankbang_dl.consts import EXIT_FAILURE, LOG_PATH
 
 
 def exit_session(exit_value: int) -> None:

@@ -4,10 +4,10 @@ from argparse import Namespace
 
 from core_helpers.cli import ArgparseColorThemes, setup_parser
 
-from .consts import PACKAGE
-from .consts import __desc__ as DESC
-from .consts import __version__ as VERSION
-from .translations import detect_available_languages
+from spankbang_dl.consts import PACKAGE
+from spankbang_dl.consts import __desc__ as DESC
+from spankbang_dl.consts import __version__ as VERSION
+from spankbang_dl.translations import detect_available_languages
 
 
 def get_parsed_args() -> Namespace:

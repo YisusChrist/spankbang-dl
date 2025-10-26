@@ -6,12 +6,12 @@ from core_helpers.logs import logger
 from core_helpers.updates import check_updates
 from rich.traceback import install
 
-from .cli import get_parsed_args
-from .consts import EXIT_SUCCESS, GITHUB, LOG_FILE, PACKAGE
-from .consts import __version__ as VERSION
-from .gui import VideoDownloaderUI
-from .translations import select_language
-from .utils import exit_session
+from spankbang_dl.cli import get_parsed_args
+from spankbang_dl.consts import EXIT_SUCCESS, GITHUB, LOG_FILE, PACKAGE
+from spankbang_dl.consts import __version__ as VERSION
+from spankbang_dl.gui import VideoDownloaderUI
+from spankbang_dl.translations import select_language
+from spankbang_dl.utils import exit_session
 
 
 def main() -> None:
