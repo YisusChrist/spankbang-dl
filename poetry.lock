@@ -38,14 +38,14 @@ lxml = ["lxml"]
 
 [[package]]
 name = "blessed"
-version = "1.23.0"
+version = "1.24.0"
 description = "Easy, practical library for making terminal apps, by providing an elegant, well-documented interface to Colors, Keyboard input, and screen Positioning capabilities."
 optional = false
 python-versions = ">=3.7"
 groups = ["main"]
 files = [
-    {file = "blessed-1.23.0-py3-none-any.whl", hash = "sha256:4c432dcde0d45112372d1d096b2c4c0a6a5db1b94d546124872d0c3e64b5ea26"},
-    {file = "blessed-1.23.0.tar.gz", hash = "sha256:56591a32966f704f6131f1400af4151d9e8f5f4144133a5ca034019763dee77b"},
+    {file = "blessed-1.24.0-py3-none-any.whl", hash = "sha256:177d36ce89db91c8a61e9cf2085d5cedb6f1617dcc7c39b604bb474e2e192ec7"},
+    {file = "blessed-1.24.0.tar.gz", hash = "sha256:7822698616deb79dc8897215eef8ed56b6a3fc537dc08ffce2f2020697c6c0d4"},
 ]
 
 [package.dependencies]
