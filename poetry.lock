@@ -6,7 +6,7 @@ version = "1.89.0"
 description = "Python wrapper for loading Jason Hood's ANSICON"
 optional = false
 python-versions = "*"
-groups = ["main", "dev"]
+groups = ["main"]
 markers = "platform_system == \"Windows\""
 files = [
     {file = "ansicon-1.89.0-py2.py3-none-any.whl", hash = "sha256:f1def52d17f65c2c9682cf8370c03f541f410c1752d6a14029f97318e4b9dfec"},
@@ -38,14 +38,14 @@ lxml = ["lxml"]
 
 [[package]]
 name = "blessed"
-version = "1.34.0"
+version = "1.37.0"
 description = "Easy, practical library for making terminal apps, by providing an elegant, well-documented interface to Colors, Keyboard input, and screen Positioning capabilities."
 optional = false
 python-versions = ">=3.8"
 groups = ["main"]
 files = [
-    {file = "blessed-1.34.0-py3-none-any.whl", hash = "sha256:eb403f9ce2efab633bd1e7a05fbb35b979a7b9f213ddc41478dd55dd6999e8bf"},
-    {file = "blessed-1.34.0.tar.gz", hash = "sha256:3d17468c3d47e11ed8d6ca3da1270b8aba8ac8bd0a55a1f8189e4d04f223a1f0"},
+    {file = "blessed-1.37.0-py3-none-any.whl", hash = "sha256:24bc4b995a59cc25fb61228e4008a23b58af64882db5f846a578e46fd1ce9309"},
+    {file = "blessed-1.37.0.tar.gz", hash = "sha256:36da5ff5779c1b15d4dfa8cd583ea3b05a0a31e1db4bd5af81f89c774b3e9815"},
 ]
 
 [package.dependencies]
@@ -302,7 +302,8 @@ version = "1.4.0"
 description = "Jinxed Terminal Library"
 optional = false
 python-versions = "*"
-groups = ["main", "dev"]
+groups = ["main"]
+markers = "platform_system == \"Windows\""
 files = [
     {file = "jinxed-1.4.0-py2.py3-none-any.whl", hash = "sha256:95876a8b270081b8e28a9bbcbabe4fa98327faa91102526f724ed1904f9a55ac"},
     {file = "jinxed-1.4.0.tar.gz", hash = "sha256:8f7801a10799de39e509eb5abc6d131ee169c1ce4fd5d568aa85b5f56ed58068"},
