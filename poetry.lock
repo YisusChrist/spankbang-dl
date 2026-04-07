@@ -422,14 +422,14 @@ diagrams = ["jinja2", "railroad-diagrams"]
 
 [[package]]
 name = "readchar"
-version = "4.2.1"
+version = "4.2.2"
 description = "Library to easily read single chars and key strokes"
 optional = false
 python-versions = ">=3.8"
 groups = ["main"]
 files = [
-    {file = "readchar-4.2.1-py3-none-any.whl", hash = "sha256:a769305cd3994bb5fa2764aa4073452dc105a4ec39068ffe6efd3c20c60acc77"},
-    {file = "readchar-4.2.1.tar.gz", hash = "sha256:91ce3faf07688de14d800592951e5575e9c7a3213738ed01d394dcc949b79adb"},
+    {file = "readchar-4.2.2-py3-none-any.whl", hash = "sha256:92daf7e42c52b0787e6c75d01ecfb9a94f4ceff3764958b570c1dddedd47b200"},
+    {file = "readchar-4.2.2.tar.gz", hash = "sha256:e3b270fe16fc90c50ac79107700330a133dd4c63d22939f5b03b4f24564d5dd8"},
 ]
 
 [[package]]
