@@ -38,18 +38,18 @@ lxml = ["lxml"]
 
 [[package]]
 name = "blessed"
-version = "1.39.0"
+version = "1.40.0"
 description = "Easy, practical library for making terminal apps, by providing an elegant, well-documented interface to Colors, Keyboard input, and screen Positioning capabilities."
 optional = false
 python-versions = ">=3.8"
 groups = ["main"]
 files = [
-    {file = "blessed-1.39.0-py3-none-any.whl", hash = "sha256:666e7e3fd0a4e38c3a262eaaf1e22a4ce2c81337aa17593c3f60ea136ec24fe1"},
-    {file = "blessed-1.39.0.tar.gz", hash = "sha256:b04fc7141a20a3b2ade6cad741051f1e3ac59cc1e7e90915ed1f9e521332bea4"},
+    {file = "blessed-1.40.0-py3-none-any.whl", hash = "sha256:485e4de2afc626776493492d64fea00db7a393febfb3dfbd607d4c8f00dc14de"},
+    {file = "blessed-1.40.0.tar.gz", hash = "sha256:2f90b531464769f039f6303b9352bed7e004698b5c881bb01abf5b0772dd5160"},
 ]
 
 [package.dependencies]
-jinxed = {version = ">=1.4.0", markers = "platform_system == \"Windows\""}
+jinxed = ">=2.0,<3"
 wcwidth = ">=0.7"
 
 [package.extras]
@@ -303,7 +303,6 @@ description = "Jinxed Terminal Library"
 optional = false
 python-versions = "*"
 groups = ["main"]
-markers = "platform_system == \"Windows\""
 files = [
     {file = "jinxed-2.0.0-py2.py3-none-any.whl", hash = "sha256:b3df1be5262a37145ef42875a8bbf918f1a563fbd035359650dd9fc0bb2b9294"},
     {file = "jinxed-2.0.0.tar.gz", hash = "sha256:64b960b8f8d9966e1b2e7cb57ea2b1aa0a8d7e68045b96dc7ef58201e43a1209"},
