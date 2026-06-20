@@ -11,10 +11,10 @@ from urllib.parse import ParseResult, urlparse
 import requests
 from core_helpers.logs import logger
 
-from spankbang_dl.consts import AUTHOR, MB
-from spankbang_dl.consts import __version__ as VERSION
-from spankbang_dl.scraper import extract_video_info, fetch_web_content
-from spankbang_dl.translations import get_translations
+from .consts import AUTHOR, MB
+from .consts import __version__ as VERSION
+from .scraper import extract_video_info, fetch_web_content
+from .translations import detect_available_languages, get_translations
 
 # 引入库
 
@@ -65,11 +65,32 @@ class VideoDownloaderUI:
         logger.debug("Main frame created and packed")
 
         # Create UI elements with translated text and icons
-        aLabel = ttk.Label(main_frame, text=self.translations["enter_url_label"])
-        aLabel.grid(column=0, row=0, padx=10, pady=10)
+        self.url_label = ttk.Label(
+            main_frame, text=self.translations["enter_url_label"]
+        )
+        self.url_label.grid(column=0, row=0, padx=10, pady=10)
+
         self.a_url = ttk.Entry(main_frame)
         self.a_url.grid(column=1, row=0, padx=10, pady=10)
         logger.debug("URL entry field created")
+
+        self.language_button = ttk.Menubutton(
+            main_frame, text=self.translations["language"]
+        )
+        self.language_button.grid(row=0, column=2, padx=10, pady=10)
+        self.language_menu = tk.Menu(self.language_button, tearoff=0)
+
+        # Fixed the lambda scope issue using `lang=lang_code`
+        for lang_code in detect_available_languages():
+            self.language_menu.add_command(
+                label=lang_code,
+                command=lambda lang=lang_code: self.change_language(lang),
+            )
+
+        self.language_button["menu"] = self.language_menu
+        logger.debug("Language dropdown menu created inside main_frame")
+
+        self.widgets: dict[str, ttk.Widget] = {}
 
         # Replace with your icon file
         action = ttk.Button(
@@ -80,6 +101,7 @@ class VideoDownloaderUI:
             compound=tk.LEFT,
         )
         action.grid(column=0, row=2, columnspan=2, padx=10, pady=10)
+        self.widgets["download_button"] = action
         logger.debug("Download button created")
 
         action2 = ttk.Button(
@@ -90,6 +112,7 @@ class VideoDownloaderUI:
             compound=tk.LEFT,
         )
         action2.grid(column=1, row=2, columnspan=2, padx=10, pady=10)
+        self.widgets["quit_button"] = action2
         logger.debug("Quit button created")
 
         action3 = ttk.Button(
@@ -100,6 +123,7 @@ class VideoDownloaderUI:
             compound=tk.LEFT,
         )
         action3.grid(column=0, row=3, columnspan=2, padx=10, pady=10)
+        self.widgets["about_button"] = action3
         logger.debug("About button created")
 
         action4 = ttk.Button(
@@ -110,13 +134,12 @@ class VideoDownloaderUI:
             compound=tk.LEFT,
         )
         action4.grid(column=1, row=3, columnspan=2, padx=10, pady=10)
+        self.widgets["help_button"] = action4
         logger.debug("Help button created")
 
         # Create a scrolled text widget
-        scrolW = 80
-        scrolH = 10
         self.scr = scrolledtext.ScrolledText(
-            main_frame, width=scrolW, height=scrolH, wrap=tk.WORD
+            main_frame, width=80, height=10, wrap=tk.WORD
         )
         self.scr.grid(column=0, row=1, columnspan=2, padx=10, pady=10)
         logger.debug("Scrolled text widget created")
@@ -141,11 +164,8 @@ class VideoDownloaderUI:
             command=self._cancel_download,
         )
         cancel_button.grid(column=0, row=6, columnspan=2, pady=(5, 10))
-
-        # Create a menu bar
-        menuBar = tk.Menu(self.win)
-        self.win.config(menu=menuBar)
-        logger.debug("Menu bar created")
+        self.widgets["cancel_button"] = cancel_button
+        logger.debug("Cancel button created")
 
         # Set minimum sizes for the main frame and its children
         self.win.update_idletasks()  # Update the window to calculate sizes
@@ -153,7 +173,23 @@ class VideoDownloaderUI:
         min_height: int = main_frame.winfo_reqheight()
         self.win.minsize(min_width, min_height)
         logger.debug("Minimum size set to: %s", f"{min_width}x{min_height}")
+
         logger.debug("GUI initialized successfully")
+
+    def change_language(self, lang_code: str) -> None:
+        self.translations = get_translations(lang_code)
+        self.current_language: str = lang_code
+
+        # Update the OS Window title
+        self.win.title(self.translations["window_title"])
+
+        # Update dynamically generated widgets
+        for widget_name, widget in self.widgets.items():
+            widget.config(text=self.translations.get(widget_name))
+
+        # Manually update components not tracked in self.widgets:
+        self.url_label.config(text=self.translations["enter_url_label"])
+        self.language_button.config(text=self.translations["language"])
 
     def handle_web_content_fetch(
         self, url: str, stream: bool = False

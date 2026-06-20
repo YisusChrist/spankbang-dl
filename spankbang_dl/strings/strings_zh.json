@@ -1,4 +1,5 @@
 {
+    "language": "语言",
     "welcome_message": "请输入Spankbang地址:",
     "failure_message": "网页内容抓取失败！状态码:",
     "warning_title": "警告",

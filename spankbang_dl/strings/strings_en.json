@@ -1,4 +1,5 @@
 {
+    "language": "Language",
     "welcome_message": "Enter Spankbang URL:",
     "failure_message": "Web content fetch failed! Status code: {}",
     "warning_title": "Warning",

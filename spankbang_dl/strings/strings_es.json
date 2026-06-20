@@ -1,4 +1,5 @@
 {
+    "language": "Idioma",
     "welcome_message": "Introduce la URL de Spankbang:",
     "failure_message": "¡Fallo al descargar el contenido web! Código de estado: {}",
     "warning_title": "Advertencia",
