@@ -209,6 +209,7 @@ def download_video_and_display_progress(
     gui.progress_bar["value"] = 0
     gui.progress_percent.set("0%")
     # Reset flags
+    gui.pause_download = False
     gui.cancel_download = False
     gui.downloading = True
     # Ensure initial draw
@@ -228,10 +229,16 @@ def download_video_and_display_progress(
                 # Reset progress bar, label and flags
                 gui.progress_bar["value"] = 0
                 gui.progress_percent.set("0%")
+                gui.pause_download = False  # reset pause flag
                 gui.cancel_download = False  # reset cancel flag
                 gui.downloading = False
                 logger.info("Download cancelled by user.")
                 return
+            elif gui.pause_download:
+                logger.info("Download paused by user.")
+                while gui.pause_download:
+                    time.sleep(0.1)  # Wait until unpaused
+                logger.info("Download resumed by user.")
 
             if not chunk:
                 continue
@@ -308,6 +315,24 @@ def cancel_download(gui: VideoDownloaderUI) -> None:
 
     gui.cancel_download = True
     gui.log_message(gui.translations["cancelled_message"])
+
+
+def pause_resume_download(gui: VideoDownloaderUI) -> None:
+    """Sets the pause flag to True."""
+    logger.debug("Pause download button clicked")
+    if not gui.downloading:
+        gui.log_message(gui.translations["no_download_message"])
+        logger.warning("No download in progress to pause/resume.")
+        return
+
+    if gui.pause_download:
+        gui.pause_download = False
+        gui.log_message(gui.translations["resumed_message"])
+        logger.info("Download resumed by user.")
+    else:
+        gui.pause_download = True
+        gui.log_message(gui.translations["paused_message"])
+        logger.info("Download paused by user.")
 
 
 def change_language(gui: VideoDownloaderUI, lang_code: str) -> None:

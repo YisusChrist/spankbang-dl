@@ -27,6 +27,8 @@
   "already_downloading_message": "Ya hay una descarga en progreso. Por favor, espera a que termine o cancélala antes de iniciar una nueva",
   "no_download_message": "No hay ninguna descarga en progreso",
   "cancelled_message": "Descarga cancelada por el usuario",
+  "paused_message": "Descarga pausada por el usuario",
+  "resumed_message": "Descarga reanudada por el usuario",
   "about_message": "Autor: {}\nVersión: {}\nActualizado: {}",
   "help_message": "1. Introduce la URL del video de Spankbang\n2. Haz clic en Descargar\n3. Espera a que se complete la descarga",
   "download_video_message": "Descargando video: {}",

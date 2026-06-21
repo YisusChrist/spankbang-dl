@@ -28,6 +28,7 @@ class VideoDownloaderUI:
     window_width: int = 1200
 
     cancel_download = False
+    pause_download = False
     downloading = False
 
     def __init__(self, selected_language: str = "en") -> None:
@@ -133,6 +134,15 @@ class VideoDownloaderUI:
         )
         self.start_btn.grid(row=0, column=2, padx=2)
         logger.debug("Download button created")
+
+        self.pause_btn = ttk.Button(
+            self.progress_frame,
+            text="⏸",
+            width=3,
+            command=lambda: commands.pause_resume_download(self),
+        )
+        self.pause_btn.grid(row=0, column=3, padx=2)
+        logger.debug("Pause button created")
 
         self.stop_btn = ttk.Button(
             self.progress_frame,

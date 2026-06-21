@@ -27,6 +27,8 @@
   "already_downloading_message": "已有下载正在进行中，请等待其完成或取消后再开始新的下载",
   "no_download_message": "没有正在进行的下载",
   "cancelled_message": "用户取消了下载",
+  "paused_message": "下载已暂停",
+  "resumed_message": "下载已恢复",
   "about_message": "作者：{}\n版本: {}\n更新时间: {}",
   "help_message": "1. 输入Spankbang视频地址\n2. 点击下载\n3. 等待下载完成",
   "download_video_message": "正在下载视频：{}",
