@@ -1,11 +1,12 @@
 import time
 import tkinter as tk
 from datetime import date
+from mimetypes import guess_extension
 from pathlib import Path
 from threading import Thread
 from tkinter import messagebox, ttk
 from typing import TYPE_CHECKING, Optional
-from urllib.parse import ParseResult, urlparse
+from urllib.parse import ParseResult, unquote, urlparse
 
 import requests
 from core_helpers.logs import logger
@@ -102,13 +103,18 @@ def start_download_thread(gui: VideoDownloaderUI) -> None:
 
 
 def handle_web_content_fetch(
-    gui: VideoDownloaderUI, url: str, stream: bool = False
+    gui: VideoDownloaderUI,
+    url: str,
+    headers: dict[str, str] | None = None,
+    stream: bool = False,
 ) -> Optional[requests.Response]:
     """
     Fetch web content from the given URL and handle exceptions.
 
     Args:
         url (str): The URL to fetch web content from.
+        headers (dict[str, str], optional): Additional headers to include in
+            the request. Defaults to None.
         stream (bool): Whether to stream the response content. Defaults to False.
 
     Returns:
@@ -118,7 +124,9 @@ def handle_web_content_fetch(
     logger.debug("Fetching and handling web content for URL: %s", url)
 
     try:
-        response: requests.Response = fetch_web_content(url, stream=stream)
+        response: requests.Response = fetch_web_content(
+            url, headers=headers, stream=stream
+        )
         logger.info(
             "Web content fetched successfully for %s: %s", url, response.status_code
         )
@@ -177,7 +185,6 @@ def download_video_and_display_progress(
     """
     logger.debug("Starting video download for URL: %s", resp.url)
 
-    content_size = int(resp.headers["Content-Length"])
     parsed_url: ParseResult = urlparse(resp.url)
     if not parsed_url.path:
         gui.win.after(
@@ -189,6 +196,65 @@ def download_video_and_display_progress(
         logger.error("Invalid URL: %s", resp.url)
         return
 
+    media_name: str = unquote(parsed_url.path).split("/")[-1]
+    if not Path(media_name).suffix:
+        logger.info(
+            f"Media name '{media_name}' has no extension, checking content type..."
+        )
+        content_type: str = resp.headers.get("Content-Type", "")
+        if not content_type:
+            logger.error(f"Failed to get content type for {resp.url}")
+            gui.win.after(
+                0,
+                lambda: gui.log_message(
+                    f"[bold red]ERROR[/bold red]: Failed to get content type for {resp.url}"
+                ),
+            )
+            return
+
+        # Map content type to a file extension
+        extension: str | None = guess_extension(content_type.split(";")[0].strip())
+        if not extension:
+            logger.error(f"Failed to guess extension for content type: {content_type}")
+            gui.win.after(
+                0,
+                lambda: gui.log_message(
+                    f"[bold red]ERROR[/bold red]: Failed to guess extension for content type: {content_type}"
+                ),
+            )
+            return
+
+        media_name += extension
+        logger.debug(f"Updated media name to: {media_name}")
+
+    media_path: Path = Path(media_name).resolve()
+    if media_path.exists():
+        logger.warning(f"File {media_path} already exists, skipping download.")
+        gui.win.after(
+            0,
+            lambda: gui.log_message(
+                gui.translations["file_exists_message"].format(media_path.name)
+            ),
+        )
+        return
+
+    temp_path: Path = media_path.with_suffix(media_path.suffix + ".part")
+    logger.debug(f"Temporary file path: {temp_path}")
+
+    downloaded: int = 0
+    if temp_path.exists():
+        # Continue from previous unfinished download
+        downloaded = temp_path.stat().st_size
+        logger.debug(f"Resuming download from {downloaded} bytes")
+        gui.win.after(
+            0,
+            lambda: gui.log_message(f"Resuming download from {downloaded} bytes"),
+        )
+
+        headers = {"Range": f"bytes={downloaded}-"}
+        resp = handle_web_content_fetch(gui, resp.url, headers=headers, stream=True)
+
+    content_size = int(resp.headers["Content-Length"])
     content_size_text: str = format_file_size(content_size)
     gui.win.after(
         0,
@@ -198,16 +264,11 @@ def download_video_and_display_progress(
     )
     logger.debug("Total size of the video: %s", content_size_text)
 
-    # Extract the media extension from the URL path
-    file_extension: str = parsed_url.path.split(".")[-1]
-    file_name: str = parsed_url.path.split("/")[-1] or f"video.{file_extension}"
-    # Create the file path with the correct extension
-    file_path: Path = Path(file_name).with_suffix(f".{file_extension}")
-
     # Set up progress bar
     gui.progress_bar["maximum"] = content_size
-    gui.progress_bar["value"] = 0
-    gui.progress_percent.set("0%")
+    gui.progress_bar["value"] = downloaded
+    initial_percent: float = (downloaded / content_size) * 100
+    gui.progress_percent.set(f"{initial_percent:.1f}%")
     # Reset flags
     gui.pause_download = False
     gui.cancel_download = False
@@ -215,7 +276,6 @@ def download_video_and_display_progress(
     # Ensure initial draw
     gui.win.update_idletasks()
 
-    downloaded = 0
     start_time: float = time.time()
 
     # Dynamically adjust chunk size based on content size for better performance
@@ -225,7 +285,7 @@ def download_video_and_display_progress(
     elif content_size > 5 * MB:
         chunk_size = 64 * KB
 
-    with open(file_path, mode="wb") as f:
+    with open(temp_path, mode="ab") as f:
 
         def update_progress() -> None:
             gui.progress_bar["value"] = downloaded
@@ -262,13 +322,15 @@ def download_video_and_display_progress(
             gui.win.after(0, update_progress)
 
     gui.downloading = False
+    temp_path.rename(media_path)
+
     gui.win.after(
         0, lambda: gui.log_message(gui.translations["download_complete_message"])
     )
     gui.win.after(
-        0, lambda: gui.log_message(gui.translations["video_saved"].format(file_path))
+        0, lambda: gui.log_message(gui.translations["video_saved"].format(media_path))
     )
-    logger.info("Download complete for %r", file_path)
+    logger.info("Download complete for %r", media_path)
 
 
 def quit_app(gui: VideoDownloaderUI) -> None:
