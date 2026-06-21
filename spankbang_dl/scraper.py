@@ -21,9 +21,11 @@ def fetch_web_content(url: str, **kwargs) -> requests.Response:
     """
     logger.debug("Fetching web content from URL: %s", url)
 
-    headers["Referer"] = url
+    req_headers = kwargs.pop("headers", {}) or {}
+    req_headers.update(headers)
+    req_headers["Referer"] = url
 
-    response: requests.Response = scraper.get(url, headers=headers, **kwargs)
+    response: requests.Response = scraper.get(url, headers=req_headers, **kwargs)
     response.raise_for_status()
 
     return response
