@@ -13,7 +13,7 @@ from core_helpers.logs import logger
 if TYPE_CHECKING:
     from . import VideoDownloaderUI
 
-from ..consts import AUTHOR, MB
+from ..consts import AUTHOR, DEFAULT_CHUNK_SIZE, KB, MB
 from ..consts import __version__ as VERSION
 from ..scraper import extract_video_info, fetch_web_content
 from ..translations import get_translations
@@ -218,13 +218,20 @@ def download_video_and_display_progress(
     downloaded = 0
     start_time: float = time.time()
 
+    # Dynamically adjust chunk size based on content size for better performance
+    chunk_size = DEFAULT_CHUNK_SIZE
+    if content_size > 50 * MB:
+        chunk_size = 256 * KB
+    elif content_size > 5 * MB:
+        chunk_size = 64 * KB
+
     with open(file_path, mode="wb") as f:
 
         def update_progress() -> None:
             gui.progress_bar["value"] = downloaded
             gui.progress_percent.set(f"{percent:.1f}%")
 
-        for chunk in resp.iter_content(MB):
+        for chunk in resp.iter_content(chunk_size):
             if gui.cancel_download:
                 # Reset progress bar, label and flags
                 gui.progress_bar["value"] = 0
