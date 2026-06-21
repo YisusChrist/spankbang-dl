@@ -6,6 +6,26 @@ from rich import print
 from spankbang_dl.consts import EXIT_FAILURE, LOG_PATH
 
 
+def format_file_size(size_in_bytes, unit: str = "B", lowercase: bool = False):
+    # The units we want to cycle through
+    prefixes = ["", "K", "M", "G", "T", "P"]
+
+    size = float(size_in_bytes)
+    unit_index = 0
+
+    # Divide by 1024 until the size is less than 1024
+    while size >= 1024 and unit_index < len(prefixes) - 1:
+        size /= 1024
+        unit_index += 1
+
+    # Return formatted string: .2f removes unnecessary decimal clutter
+    final_unit = (prefixes[unit_index] + unit).strip()
+    if lowercase:
+        final_unit = final_unit.lower()
+
+    return f"{size:.2f} {final_unit}"
+
+
 def exit_session(exit_value: int) -> None:
     """
     Exit the program with the given exit value.
