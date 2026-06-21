@@ -3,6 +3,7 @@ import requests
 from bs4 import BeautifulSoup
 from core_helpers.logs import logger
 
+scraper: cloudscraper.CloudScraper = cloudscraper.create_scraper()
 headers: dict[str, str] = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/117.0.0.0 Safari/537.36",
 }
@@ -19,8 +20,6 @@ def fetch_web_content(url: str, **kwargs) -> requests.Response:
         requests.Response: The response object.
     """
     logger.debug("Fetching web content from URL: %s", url)
-
-    scraper: cloudscraper.CloudScraper = cloudscraper.create_scraper()
 
     headers["Referer"] = url
 
