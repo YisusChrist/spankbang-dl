@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import time
 import tkinter as tk
 from datetime import date
@@ -21,7 +23,7 @@ from ..translations import get_translations
 from ..utils import format_file_size
 
 
-def _create_pop_up_window(gui: "VideoDownloaderUI", title: str, message: str) -> None:
+def _create_pop_up_window(gui: VideoDownloaderUI, title: str, message: str) -> None:
     """
     Create a pop-up window with the given title and message.
 
