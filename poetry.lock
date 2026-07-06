@@ -38,18 +38,18 @@ lxml = ["lxml"]
 
 [[package]]
 name = "blessed"
-version = "1.45.0"
+version = "1.46.0"
 description = "Easy, practical library for making terminal apps, by providing an elegant, well-documented interface for Terminals."
 optional = false
 python-versions = ">=3.8"
 groups = ["main"]
 files = [
-    {file = "blessed-1.45.0-py3-none-any.whl", hash = "sha256:afcc23a07e965534dd4669951d2397397dbece46e18998eee9d24d40ac503765"},
-    {file = "blessed-1.45.0.tar.gz", hash = "sha256:d12abbbcfb5fdd80bac33ea7e22f1a163ff462f5c05f312159e04c5fee460c72"},
+    {file = "blessed-1.46.0-py3-none-any.whl", hash = "sha256:558334e2456300332cff9f2b211656cd3eecd3f56a5b1ee5f6110ed83c28e25d"},
+    {file = "blessed-1.46.0.tar.gz", hash = "sha256:171ee6775a9be86bb000f2e22034c08f76851feb60934a2922feeaff43d0fa60"},
 ]
 
 [package.dependencies]
-jinxed = ">=2.0,<3"
+jinxed = ">=2.1,<3"
 wcwidth = ">=0.8.1"
 
 [package.extras]
@@ -298,14 +298,14 @@ readchar = ">=4.2.0"
 
 [[package]]
 name = "jinxed"
-version = "2.0.4"
+version = "2.1.0"
 description = "Jinxed Terminal Library"
 optional = false
 python-versions = "*"
 groups = ["main"]
 files = [
-    {file = "jinxed-2.0.4-py2.py3-none-any.whl", hash = "sha256:58ae0a4a2930b51e9de162208c356b382f5e25b3bc0ad73e2013b02a62d84e8b"},
-    {file = "jinxed-2.0.4.tar.gz", hash = "sha256:a92ac48923433c0a88577bb0479191788813fd5055ef17ff2b04a701a1b83f19"},
+    {file = "jinxed-2.1.0-py2.py3-none-any.whl", hash = "sha256:43b802d18b70e405d410fb66eb2837d1101e7e5ea922e666507bb43f34d11d09"},
+    {file = "jinxed-2.1.0.tar.gz", hash = "sha256:7e755b831faa2443d44fb4ce7c0202eb9c3ed39bd5bf1193365888f4f6092b54"},
 ]
 
 [package.dependencies]
