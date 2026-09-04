@@ -38,19 +38,19 @@ lxml = ["lxml"]
 
 [[package]]
 name = "blessed"
-version = "1.48.0"
+version = "1.49.0"
 description = "Easy, practical library for making terminal apps, by providing an elegant, well-documented interface for Terminals."
 optional = false
 python-versions = ">=3.8"
 groups = ["main"]
 files = [
-    {file = "blessed-1.48.0-py3-none-any.whl", hash = "sha256:c4ce01cba220f41d2ff244e9829cb4ef2390a26ace8ce1687b8bced1613676e5"},
-    {file = "blessed-1.48.0.tar.gz", hash = "sha256:5ed4c0d40d0121669ef949e4f23465982614eb821bd110d1d5a98ed97dea13d8"},
+    {file = "blessed-1.49.0-py3-none-any.whl", hash = "sha256:770279b4066218f38a06ee87976ccc658fbffd4ffb43a5ee1e9a5eef3d4f3ba0"},
+    {file = "blessed-1.49.0.tar.gz", hash = "sha256:a1c5e15c895898b976d85e6c7278496b325bbb4e656794413bf5c1648c9c12c9"},
 ]
 
 [package.dependencies]
 jinxed = ">=2.1,<3"
-wcwidth = ">=0.8.1"
+wcwidth = ">=0.8.3"
 
 [package.extras]
 docs = ["Pillow", "Sphinx (>3)", "sphinx-paramlinks", "sphinx_rtd_theme", "sphinxcontrib-manpage"]
