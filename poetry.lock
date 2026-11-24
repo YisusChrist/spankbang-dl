@@ -341,14 +341,14 @@ readchar = ">=4.2.0"
 
 [[package]]
 name = "jinxed"
-version = "2.1.0"
+version = "2.1.1"
 description = "Jinxed Terminal Library"
 optional = false
 python-versions = "*"
 groups = ["main"]
 files = [
-    {file = "jinxed-2.1.0-py2.py3-none-any.whl", hash = "sha256:43b802d18b70e405d410fb66eb2837d1101e7e5ea922e666507bb43f34d11d09"},
-    {file = "jinxed-2.1.0.tar.gz", hash = "sha256:7e755b831faa2443d44fb4ce7c0202eb9c3ed39bd5bf1193365888f4f6092b54"},
+    {file = "jinxed-2.1.1-py2.py3-none-any.whl", hash = "sha256:fc426cfbad83ad94c47fa0327cd0a6aff4d5e90214488796978a2d694bf7b602"},
+    {file = "jinxed-2.1.1.tar.gz", hash = "sha256:af7f67b8e5fe6055ae5ce4f24c9537f92cfa8ee5a29a683284cf558fb1d1eee8"},
 ]
 
 [package.dependencies]
